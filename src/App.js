@@ -5,8 +5,8 @@ import arrow from './right-arrow.svg'
 import './App.css';
 
 function App() {
-  const [wind, setWind] = useState([])
-  const [gusts, setGusts] = useState([])
+  const [wind, setWind] = useState([[0, 0]])
+  const [gusts, setGusts] = useState([[0, 0]])
   const [direction, setDirection] = useState([[0, 0]])
 
   useEffect(() => {
@@ -41,16 +41,28 @@ function App() {
   const gustData = gusts.map(sanitizeWindPair).filter(value => value.x > nowMinus3h);
 
   const lastWindDirection = parseFloat(direction[direction.length - 1][1])
+  const lastWindSpeed = parseFloat(wind[wind.length - 1][1]).toFixed(1)
+  const lastGustSpeed = parseFloat(gusts[gusts.length - 1][1]).toFixed(1)
   const arrowStyle = {
     transform: `rotate(${lastWindDirection + 90}deg)`,
     // width: "200px",
-    // height: "200px"
+    height: "100px"
   }
 
   return (
     <div className="App">
       <header className="App-header">
         <h1>Klaipėdos uosto vėjas</h1>
+        <h4>
+          <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+            <div>
+              Dabartinis vėjas: {lastWindSpeed}<br />
+              Gūsiai: {lastGustSpeed}<br />
+              Krypts: {lastWindDirection.toFixed()}°
+            </div>
+            <div><img src={arrow} style={arrowStyle} alt="logo" /></div>
+          </div>
+        </h4>
         <VictoryChart
           theme={VictoryTheme.material}
         >
@@ -69,8 +81,6 @@ function App() {
             data={gustData}
           />
         </VictoryChart>
-        <h2>Dabartinė vėjo kryptis: {lastWindDirection.toFixed()}°</h2>
-        <img src={arrow} style={arrowStyle} alt="logo" />
       </header>
     </div>
   );
